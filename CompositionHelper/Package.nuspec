@@ -8,7 +8,7 @@
     <owners>Nicolai Henriksen</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/nicolaihenriksen/CompositionHelper</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Helper utility for MEF2 composition in Unit Testing</description>
     <releaseNotes>Renamed Nuspec title</releaseNotes>
     <copyright>Copyright 2016</copyright>

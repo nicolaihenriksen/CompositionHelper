@@ -37,10 +37,10 @@ namespace Nicolai.Utils.Composition.CompositionHelper
             return this;
         }
 
-        public CompositionHelper ComposeExport<TPartInterface>(object implementation)
+        public CompositionHelper ComposeExport<TPart>(TPart implementation)
         {
-            if (implementation is TPartInterface)
-                this.config = this.config.WithProvider(new InstanceExportDescriptorProvider(implementation));
+            if (implementation != null)
+                this.config = this.config.WithProvider(new InstanceExportDescriptorProvider<TPart>(implementation));
             return this;
         }
 

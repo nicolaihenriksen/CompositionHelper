@@ -57,7 +57,7 @@ namespace UnitTests
             var stubImplementation2 = Substitute.For<Interface2>();
             stubImplementation2.GetMessage().Returns(stubResponse);
             var helper = new CompositionHelper().AddAssemblies(new[] { this.interfaceAssembly, this.implementationAssembly }, typeof(Implementation2));
-            helper.ComposeExport<Interface2>(stubImplementation2);
+            helper.ComposeExport(stubImplementation2);
 
             // Act
             var instance = helper.GetExport<Interface1>();

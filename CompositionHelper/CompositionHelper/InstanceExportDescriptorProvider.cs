@@ -8,19 +8,18 @@ namespace Nicolai.Utils.Composition.CompositionHelper
     /// <summary>
     /// Export descriptor used to allow us to add our own instances (i.e. stubs) into the composition.
     /// </summary>
-    internal class InstanceExportDescriptorProvider : ExportDescriptorProvider
+    internal class InstanceExportDescriptorProvider<T> : ExportDescriptorProvider
     {
-        private readonly object instance;
+        private readonly T instance;
 
-        public InstanceExportDescriptorProvider(object instance)
+        public InstanceExportDescriptorProvider(T instance)
         {
             this.instance = instance;
         }
 
         public override IEnumerable<ExportDescriptorPromise> GetExportDescriptors(CompositionContract contract, DependencyAccessor descriptorAccessor)
         {
-            var temp = new Type[0]; // Figure out whether this.instance is an instance of type contract.ContractType
-            if (temp.Where(t => Equals(t, contract.ContractType)).Any())
+            if (typeof(T) == contract.ContractType)
             {
                 yield return new ExportDescriptorPromise(contract, contract.ContractType.FullName, true, NoDependencies, dependencies => ExportDescriptor.Create((context, operation) => this.instance, NoMetadata));
             }

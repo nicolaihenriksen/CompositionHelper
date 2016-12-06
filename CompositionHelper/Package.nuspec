@@ -3,7 +3,7 @@
   <metadata>
     <title>MEF2 Composition Helper</title>
     <id>Nicolai.Utils.Composition.CompositionHelper</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <authors>Nicolai Henriksen</authors>
     <owners>Nicolai Henriksen</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>

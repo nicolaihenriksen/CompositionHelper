@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <title>MEF2 Composition Helper</title>
+    <id>Nicolai.Utils.Composition.CompositionHelper</id>
+    <version>1.0.1</version>
+    <authors>Nicolai Henriksen</authors>
+    <owners>Nicolai Henriksen</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/nicolaihenriksen/CompositionHelper</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Helper utility for MEF2 composition in Unit Testing</description>
+    <releaseNotes>Renamed Nuspec title</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>MEF2, Composition, Unittest, Test</tags>
+    <dependencies>
+      <dependency id="Microsoft.Composition" version="1.0.30" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="CompositionHelper\bin\Release\Nicolai.Utils.Composition.CompositionHelper.dll" target="lib\Nicolai.Utils.Composition.CompositionHelper.dll" />
+  </files>
+</package>

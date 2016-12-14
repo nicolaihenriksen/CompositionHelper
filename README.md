@@ -12,17 +12,22 @@ var stubInterface2 = Substitute.For<Interface2>();
 
 // Create
 var helper = new CompositionHelper()
-	.AddAssemblies(new[] { this.interfaceAssembly, this.implementationAssembly }, typeof(Implementation2));
+	.AddAssembly(this.implementationAssembly, typeof(Implementation2));
 helper.ComposeExport(stubInterface2);
 ```
 
 The interesting lines here are:
 ```cs
 var helper = new CompositionHelper()
-	.AddAssemblies(new[] { this.interfaceAssembly, this.implementationAssembly }, typeof(Implementation2));
+	.AddAssembly(this.implementationAssembly, typeof(Implementation2));
 ```
-which creates the composition helper and adds the two assemblies while ensuring that *Implementation2* is not added to the composition, and:
+which creates the composition helper and adds the implementation assembly while ensuring that *Implementation2* is not added to the composition, and:
 ```cs
 helper.ComposeExport(stubInterface2);
 ```
 which puts the stub implementation of *Interface2* in the composition.
+
+The helper also keeps track of which exports it discovers while creating the composition. The types are available via the ExportableTypes property:
+```cs
+var exportableTypes = helper.ExportableTypes;
+```

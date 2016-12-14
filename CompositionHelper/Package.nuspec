@@ -3,14 +3,14 @@
   <metadata>
     <title>MEF2 Composition Helper</title>
     <id>Nicolai.Utils.Composition.CompositionHelper</id>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
     <authors>Nicolai Henriksen</authors>
     <owners>Nicolai Henriksen</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/nicolaihenriksen/CompositionHelper</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Helper utility for MEF2 composition in Unit Testing</description>
-    <releaseNotes>Renamed Nuspec title</releaseNotes>
+    <releaseNotes>Added ExportableTypes property and implemented disposable pattern. Added more unit testing</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>MEF2, Composition, Unittest, Test</tags>
     <dependencies>

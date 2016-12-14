@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Composition.Convention;
 using System.Reflection;
 
@@ -14,11 +15,18 @@ namespace Nicolai.Utils.Composition.CompositionHelper
     /// </summary>
     internal class CustomConventionBuilder : ConventionBuilder
     {
+        private HashSet<Type> visitedTypes = new HashSet<Type>();
+        private HashSet<Type> exportableTypes = new HashSet<Type>();
+        public IEnumerable<Type> ExportableTypes => exportableTypes;
+
+        private readonly AttributedModelProvider convention;
 
         private readonly List<Type> ignoredTypes = new List<Type>();
 
-        public CustomConventionBuilder(params Type[] ignoredTypes)
+        public CustomConventionBuilder(AttributedModelProvider convention, params Type[] ignoredTypes)
         {
+            if (convention != null)
+                this.convention = convention;
             if (ignoredTypes != null)
             {
                 this.ignoredTypes.AddRange(ignoredTypes);
@@ -31,8 +39,43 @@ namespace Nicolai.Utils.Composition.CompositionHelper
             {
                 return new Attribute[0];
             }
-            return base.GetCustomAttributes(reflectedType, member);
+            IEnumerable<Attribute> result;
+            if (convention != null)
+                result = convention.GetCustomAttributes(reflectedType, member);
+            result = base.GetCustomAttributes(reflectedType, member);
+            AddExportedType(reflectedType, result);
+            return result;
         }
 
+        public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, ParameterInfo parameter)
+        {
+            if (this.ignoredTypes.Contains(reflectedType))
+            {
+                return new Attribute[0];
+            }
+            IEnumerable<Attribute> result;
+            if (convention != null)
+                result = convention.GetCustomAttributes(reflectedType, parameter);
+            result = base.GetCustomAttributes(reflectedType, parameter);
+            AddExportedType(reflectedType, result);
+            return result;
+        }
+
+        private void AddExportedType(Type reflectedType, IEnumerable<Attribute> attributes)
+        {
+            if (this.visitedTypes.Contains(reflectedType))
+                return;
+
+            foreach (var attribute in attributes)
+            {
+                var exportAttrib = attribute as ExportAttribute;
+                if (exportAttrib != null)
+                {
+                    exportableTypes.Add(exportAttrib.ContractType);
+                }
+            }
+
+            this.visitedTypes.Add(reflectedType);
+        }
     }
 }

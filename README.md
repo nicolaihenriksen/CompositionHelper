@@ -31,3 +31,12 @@ The helper also keeps track of which exports it discovers while creating the com
 ```cs
 var exportableTypes = helper.ExportableTypes;
 ```
+
+##Where can I get it?
+
+The utility is available as a NuGet package which can be installed from the Package Manager Console using the following command:
+
+```
+PM> Install-Package Nicolai.Utils.Composition.CompositionHelper
+```
+You can also find the package on [nuget.org](https://www.nuget.org/packages/Nicolai.Utils.Composition.CompositionHelper/).

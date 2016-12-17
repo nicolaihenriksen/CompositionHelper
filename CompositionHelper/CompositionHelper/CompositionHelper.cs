@@ -193,6 +193,32 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         }
 
         /// <summary>
+        /// Gets all the exports of the given type, T. You can optionally provide a contractName matching one that has been used in the <see cref="ExportAttribute"/>
+        /// of the desired types.
+        /// </summary>
+        /// <param name="contractName">Optional name of the desired exports (used in the <see cref="ExportAttribute"/> on the type)</param>
+        /// <returns>Enumerable of all the exported instances matching the desired type T</returns>
+        /// <exception cref="CompositionFailedException">If the desired type, T, cannot be exported from the composition</exception>
+        public IEnumerable<T> GetExports<T>(string contractName = null)
+        {
+            CreateCompositionHost();
+            return string.IsNullOrEmpty(contractName) ? this.host.GetExports<T>() : this.host.GetExports<T>(contractName);
+        }
+
+        /// <summary>
+        /// Gets all the exports of the given type. You can optionally provide a contractName matching one that has been used in the <see cref="ExportAttribute"/>
+        /// of the desired types.
+        /// </summary>
+        /// <param name="contractName">Optional name of the desired exports (used in the <see cref="ExportAttribute"/> on the type)</param>
+        /// <returns>Enumerable of all the exported instances matching the desired type</returns>
+        /// <exception cref="CompositionFailedException">If the desired type cannot be exported from the composition</exception>
+        public IEnumerable<object> GetExports(Type type, string contractName = null)
+        {
+            CreateCompositionHost();
+            return string.IsNullOrEmpty(contractName) ? this.host.GetExports(type) : this.host.GetExports(type, contractName);
+        }
+
+        /// <summary>
         /// Checks that the composition is not already created, if so it throws an exception
         /// </summary>
         private void VerifyCompositionHostNotCreated()

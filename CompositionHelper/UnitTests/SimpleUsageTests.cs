@@ -226,6 +226,70 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void GetExports_Generic_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly });
+
+            // Act
+            var types = helper.GetExports<ICompositionTest3>()?.ToList();
+
+            // Assert
+            Assert.IsNotNull(types);
+            Assert.AreEqual(2, types.Count);
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(CompositionTest3Implementation1)).Any());
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(CompositionTest3Implementation2)).Any());
+        }
+
+        [TestMethod]
+        public void GetExports_NamedGeneric_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly });
+
+            // Act
+            var types = helper.GetExports<ICompositionTest3>("NamedImplementation")?.ToList();
+
+            // Assert
+            Assert.IsNotNull(types);
+            Assert.AreEqual(2, types.Count);
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(NamedCompositionTest3Implementation1)).Any());
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(NamedCompositionTest3Implementation2)).Any());
+        }
+
+        [TestMethod]
+        public void GetExports_NonGeneric_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly });
+
+            // Act
+            var types = helper.GetExports(typeof(ICompositionTest3))?.ToList();
+
+            // Assert
+            Assert.IsNotNull(types);
+            Assert.AreEqual(2, types.Count);
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(CompositionTest3Implementation1)).Any());
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(CompositionTest3Implementation2)).Any());
+        }
+
+        [TestMethod]
+        public void GetExports_NamedNonGeneric_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly });
+
+            // Act
+            var types = helper.GetExports(typeof(ICompositionTest3), "NamedImplementation")?.ToList();
+
+            // Assert
+            Assert.IsNotNull(types);
+            Assert.AreEqual(2, types.Count);
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(NamedCompositionTest3Implementation1)).Any());
+            Assert.IsTrue(types.Where(t => t.GetType() == typeof(NamedCompositionTest3Implementation2)).Any());
+        }
+
+        [TestMethod]
         public void ExportableTypes_All_Success()
         {
             // Arrange
@@ -238,7 +302,7 @@ namespace UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(3, result.Count);
             Assert.IsTrue(result.Contains(typeof(ICompositionTest)));
             Assert.IsTrue(result.Contains(typeof(ICompositionTest2)));
         }
@@ -256,35 +320,48 @@ namespace UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(2, result.Count);
             Assert.IsTrue(result.Contains(typeof(ICompositionTest)));
         }
     }
 
     public interface ICompositionTest
-    {
-    }
+    { }
 
     public interface ICompositionTest2
-    {
-    }
+    { }
+
+    public interface ICompositionTest3
+    { }
 
     [Export(typeof(ICompositionTest))]
     public class CompositionTestImplementation : ICompositionTest
-    {
-    }
+    { }
 
     [Export("NamedImplementation", typeof(ICompositionTest))]
     public class NamedCompositionTestImplementation : ICompositionTest
-    {
-    }
+    { }
 
     internal class StubCompositionTestImplementation : ICompositionTest
-    {
-    }
+    { }
 
     [Export(typeof(ICompositionTest2))]
     public class CompositionTest2Implementation : ICompositionTest2
-    {
-    }
+    { }
+
+    [Export(typeof(ICompositionTest3))]
+    public class CompositionTest3Implementation1 : ICompositionTest3
+    { }
+
+    [Export(typeof(ICompositionTest3))]
+    public class CompositionTest3Implementation2 : ICompositionTest3
+    { }
+
+    [Export("NamedImplementation", typeof(ICompositionTest3))]
+    public class NamedCompositionTest3Implementation1 : ICompositionTest3
+    { }
+
+    [Export("NamedImplementation", typeof(ICompositionTest3))]
+    public class NamedCompositionTest3Implementation2 : ICompositionTest3
+    { }
 }

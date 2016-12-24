@@ -3,6 +3,7 @@ using Nicolai.Utils.Composition.CompositionHelper;
 using System.Composition.Hosting;
 using System.Composition;
 using System.Linq;
+using System.Composition.Convention;
 
 namespace UnitTests
 {
@@ -322,6 +323,78 @@ namespace UnitTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count);
             Assert.IsTrue(result.Contains(typeof(ICompositionTest)));
+        }
+
+        [TestMethod]
+        public void GetExport_NonShared_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly });
+
+            // Act
+            var instance1 = helper.GetExport<ICompositionTest>();
+            var instance2 = helper.GetExport<ICompositionTest>();
+
+            // Assert
+            Assert.IsNotNull(instance1);
+            Assert.IsNotNull(instance2);
+            Assert.AreNotEqual(instance1, instance2);
+            Assert.AreEqual(typeof(CompositionTestImplementation).FullName, instance1.GetType().FullName);
+            Assert.AreEqual(typeof(CompositionTestImplementation).FullName, instance2.GetType().FullName);
+        }
+
+        [TestMethod]
+        public void GetExport_NonSharedOverrideToShared_Success()
+        {
+            // Arrange
+            var conventions = new ConventionBuilder();
+            conventions.ForTypesMatching(t => true).Shared();
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly }, conventions);
+
+            // Act
+            var instance1 = helper.GetExport<ICompositionTest>();
+            var instance2 = helper.GetExport<ICompositionTest>();
+
+            // Assert
+            Assert.IsNotNull(instance1);
+            Assert.IsNotNull(instance2);
+            Assert.AreEqual(instance1, instance2);
+            Assert.AreEqual(typeof(CompositionTestImplementation).FullName, instance1.GetType().FullName);
+        }
+
+        [TestMethod]
+        public void GetExport_Shared_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper(true).AddAssemblies(new[] { GetType().Assembly });
+
+            // Act
+            var instance1 = helper.GetExport<ICompositionTest>();
+            var instance2 = helper.GetExport<ICompositionTest>();
+
+            // Assert
+            Assert.IsNotNull(instance1);
+            Assert.IsNotNull(instance2);
+            Assert.AreEqual(instance1, instance2);
+            Assert.AreEqual(typeof(CompositionTestImplementation).FullName, instance1.GetType().FullName);
+        }
+
+        [TestMethod]
+        public void GetExport_SharedOverrideToNonShared_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper(true).AddAssemblies(new[] { GetType().Assembly }, new ConventionBuilder());
+
+            // Act
+            var instance1 = helper.GetExport<ICompositionTest>();
+            var instance2 = helper.GetExport<ICompositionTest>();
+
+            // Assert
+            Assert.IsNotNull(instance1);
+            Assert.IsNotNull(instance2);
+            Assert.AreNotEqual(instance1, instance2);
+            Assert.AreEqual(typeof(CompositionTestImplementation).FullName, instance1.GetType().FullName);
+            Assert.AreEqual(typeof(CompositionTestImplementation).FullName, instance2.GetType().FullName);
         }
     }
 

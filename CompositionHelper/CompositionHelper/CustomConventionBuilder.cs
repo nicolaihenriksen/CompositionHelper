@@ -42,7 +42,8 @@ namespace Nicolai.Utils.Composition.CompositionHelper
             IEnumerable<Attribute> result;
             if (convention != null)
                 result = convention.GetCustomAttributes(reflectedType, member);
-            result = base.GetCustomAttributes(reflectedType, member);
+            else
+                result = base.GetCustomAttributes(reflectedType, member);
             AddExportedType(reflectedType, result);
             return result;
         }
@@ -56,7 +57,8 @@ namespace Nicolai.Utils.Composition.CompositionHelper
             IEnumerable<Attribute> result;
             if (convention != null)
                 result = convention.GetCustomAttributes(reflectedType, parameter);
-            result = base.GetCustomAttributes(reflectedType, parameter);
+            else
+                result = base.GetCustomAttributes(reflectedType, parameter);
             AddExportedType(reflectedType, result);
             return result;
         }

@@ -19,6 +19,45 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         private List<CustomConventionBuilder> builders = new List<CustomConventionBuilder>();
         private ContainerConfiguration config = new ContainerConfiguration();
         private CompositionHost host;
+        private AttributedModelProvider defaultConventions;
+
+        /// <summary>
+        /// Creates the composition helper with the default conventions provided. These conventions can be
+        /// overridden when adding types/assemblies.
+        /// </summary>
+        /// <param name="defaultConventions">The default conventions to use</param>
+        public CompositionHelper(AttributedModelProvider defaultConventions)
+        {
+            Initialize(defaultConventions);
+        }
+
+        /// <summary>
+        /// Creates the composition helper with an option to indicate whether all instances should (by default)
+        /// be shared
+        /// </summary>
+        /// <param name="allInstancesSharedByDefault">Indication of whether or not the instances should be shared or not by default. This can be overridden when adding types/assemblies</param>
+        public CompositionHelper(bool allInstancesSharedByDefault = false)
+        {
+            ConventionBuilder builder = null;
+            if (allInstancesSharedByDefault)
+            {
+                builder = new ConventionBuilder();
+                builder.ForTypesMatching(t => true).Shared();
+            }
+            Initialize(builder);
+        }
+
+        /// <summary>
+        /// Initializes the configuration with a default convention if not null
+        /// </summary>
+        /// <param name="defaultConventions">Default convention to use in the composition</param>
+        private void Initialize(AttributedModelProvider defaultConventions)
+        {
+            if (defaultConventions != null)
+            {
+                this.defaultConventions = defaultConventions;
+            }
+        }
 
         /// <summary>
         /// Adds the given assembly to the composition configuration. You can optionally provide an array of types which
@@ -31,7 +70,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         public CompositionHelper AddAssembly(Assembly assembly, params Type[] excludedTypes)
         {
             VerifyCompositionHostNotCreated();
-            return AddAssemblies(new[] { assembly }, excludedTypes);
+            return AddAssemblies(new[] { assembly }, null, excludedTypes);
         }
 
         /// <summary>
@@ -46,7 +85,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         public CompositionHelper AddAssembly(Assembly assembly, AttributedModelProvider conventions, params Type[] excludedTypes)
         {
             VerifyCompositionHostNotCreated();
-            return AddAssemblies(new[] { assembly }, excludedTypes);
+            return AddAssemblies(new[] { assembly }, conventions, excludedTypes);
         }
 
         /// <summary>
@@ -75,7 +114,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         public CompositionHelper AddAssemblies(IEnumerable<Assembly> assemblies, AttributedModelProvider conventions, params Type[] excludedTypes)
         {
             VerifyCompositionHostNotCreated();
-            var builder = new CustomConventionBuilder(conventions, excludedTypes);
+            var builder = new CustomConventionBuilder(conventions ?? defaultConventions, excludedTypes);
             builders.Add(builder);
             this.config = this.config.WithAssemblies(assemblies, builder);
             return this;
@@ -89,7 +128,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         public CompositionHelper AddType<TPart>(AttributedModelProvider conventions = null)
         {
             VerifyCompositionHostNotCreated();
-            this.config = conventions == null ? this.config.WithPart<TPart>() : this.config.WithPart<TPart>(conventions);
+            this.config = conventions == null ? this.config.WithPart<TPart>(defaultConventions) : this.config.WithPart<TPart>(conventions);
             exportableTypes.Add(typeof(TPart));
             return this;
         }
@@ -103,7 +142,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         public CompositionHelper AddType(Type type, AttributedModelProvider conventions = null)
         {
             VerifyCompositionHostNotCreated();
-            this.config = conventions == null ? this.config.WithPart(type) : this.config.WithPart(type, conventions);
+            this.config = conventions == null ? this.config.WithPart(type, defaultConventions) : this.config.WithPart(type, conventions);
             exportableTypes.Add(type);
             return this;
         }

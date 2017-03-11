@@ -20,6 +20,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         private ContainerConfiguration config = new ContainerConfiguration();
         private CompositionHost host;
         private AttributedModelProvider defaultConventions;
+        private List<object> composedInstances = new List<object>();
 
         /// <summary>
         /// Creates the composition helper with the default conventions provided. These conventions can be
@@ -158,6 +159,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
             if (implementation != null)
                 this.config = this.config.WithProvider(new InstanceExportDescriptorProvider<TPart>(implementation));
             exportableTypes.Add(typeof(TPart));
+            this.composedInstances.Add(implementation);
             return this;
         }
 
@@ -292,15 +294,27 @@ namespace Nicolai.Utils.Composition.CompositionHelper
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            DisposeInternal(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposeComposedParts)
+        {
+            Dispose();
+            if (disposeComposedParts)
+            {
+                foreach(var part in this.composedInstances)
+                {
+                    (part as IDisposable)?.Dispose();
+                }
+            }
         }
 
         /// <summary>
         /// Disposes the CompositionHelper and the underlying ContainerHost if not already disposed
         /// </summary>
         /// <param name="disposing">Indication of whether or not to dispose</param>
-        protected virtual void Dispose(bool disposing)
+        protected virtual void DisposeInternal(bool disposing)
         {
             if (!disposing || this.disposed)
                 return;

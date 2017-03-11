@@ -4,6 +4,7 @@ using System.Composition.Hosting;
 using System.Composition;
 using System.Linq;
 using System.Composition.Convention;
+using System;
 
 namespace UnitTests
 {
@@ -130,6 +131,42 @@ namespace UnitTests
             Assert.IsTrue(result);
             Assert.IsNotNull(instance);
             Assert.AreEqual(typeof(StubCompositionTestImplementation).FullName, instance.GetType().FullName);
+        }
+
+        [TestMethod]
+        public void Dispose_StubDisposed_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly }, typeof(CompositionTestImplementation));
+            ICompositionTest stub = new StubCompositionTestImplementation();
+            helper.ComposeExport(stub);
+            var instance = helper.GetExport<ICompositionTest>();
+
+            // Act
+            helper.Dispose(true);
+
+            // Assert
+            Assert.IsNotNull(instance);
+            Assert.AreEqual(typeof(StubCompositionTestImplementation).FullName, instance.GetType().FullName);
+            Assert.IsTrue(instance.DisposeCalled);
+        }
+
+        [TestMethod]
+        public void Dispose_StubNotDisposed_Success()
+        {
+            // Arrange
+            var helper = new CompositionHelper().AddAssemblies(new[] { GetType().Assembly }, typeof(CompositionTestImplementation));
+            ICompositionTest stub = new StubCompositionTestImplementation();
+            helper.ComposeExport(stub);
+            var instance = helper.GetExport<ICompositionTest>();
+
+            // Act
+            helper.Dispose(false);
+
+            // Assert
+            Assert.IsNotNull(instance);
+            Assert.AreEqual(typeof(StubCompositionTestImplementation).FullName, instance.GetType().FullName);
+            Assert.IsFalse(instance.DisposeCalled);
         }
 
         [TestMethod]
@@ -399,7 +436,9 @@ namespace UnitTests
     }
 
     public interface ICompositionTest
-    { }
+    {
+        bool DisposeCalled { get; }
+    }
 
     public interface ICompositionTest2
     { }
@@ -409,14 +448,24 @@ namespace UnitTests
 
     [Export(typeof(ICompositionTest))]
     public class CompositionTestImplementation : ICompositionTest
-    { }
+    {
+        public bool DisposeCalled => false;
+    }
 
     [Export("NamedImplementation", typeof(ICompositionTest))]
     public class NamedCompositionTestImplementation : ICompositionTest
-    { }
+    {
+        public bool DisposeCalled => false;
+    }
 
-    internal class StubCompositionTestImplementation : ICompositionTest
-    { }
+    internal class StubCompositionTestImplementation : ICompositionTest, IDisposable
+    {
+        public bool DisposeCalled { get; private set; }
+        public void Dispose()
+        {
+            DisposeCalled = true;
+        }
+    }
 
     [Export(typeof(ICompositionTest2))]
     public class CompositionTest2Implementation : ICompositionTest2

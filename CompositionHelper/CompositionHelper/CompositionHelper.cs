@@ -300,7 +300,6 @@ namespace Nicolai.Utils.Composition.CompositionHelper
 
         public void Dispose(bool disposeComposedParts)
         {
-            Dispose();
             if (disposeComposedParts)
             {
                 foreach(var part in this.composedInstances)
@@ -308,6 +307,7 @@ namespace Nicolai.Utils.Composition.CompositionHelper
                     (part as IDisposable)?.Dispose();
                 }
             }
+            Dispose();
         }
 
         /// <summary>
@@ -320,6 +320,11 @@ namespace Nicolai.Utils.Composition.CompositionHelper
                 return;
 
             this.host?.Dispose();
+            this.composedInstances.Clear();
+            this.exportableTypes.Clear();
+            this.builders.Clear();
+            this.config = null;
+            this.defaultConventions = null;
             this.disposed = true;
         }
     }

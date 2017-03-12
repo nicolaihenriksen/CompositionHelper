@@ -3,14 +3,14 @@
   <metadata>
     <title>MEF2 Composition Helper</title>
     <id>Nicolai.Utils.Composition.CompositionHelper</id>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <authors>Nicolai Henriksen</authors>
     <owners>Nicolai Henriksen</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/nicolaihenriksen/CompositionHelper</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Helper utility for MEF2 composition in Unit Testing</description>
-    <releaseNotes>Added Dispose(bool) option to allow for disposing composed stubs</releaseNotes>
+    <releaseNotes>Removed disposed references to allow for GC</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>MEF2, Composition, Unittest, Test</tags>
     <dependencies>

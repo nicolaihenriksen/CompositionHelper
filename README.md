@@ -32,7 +32,7 @@ The helper also keeps track of which exports it discovers while creating the com
 var exportableTypes = helper.ExportableTypes;
 ```
 
-##Where can I get it?
+## Where can I get it?
 
 The utility is available as a NuGet package which can be installed from the Package Manager Console using the following command:
 

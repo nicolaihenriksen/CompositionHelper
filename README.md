@@ -1,5 +1,5 @@
 # MEF2 Composition Helper
-Microsoft.Composition helper utility which encapsulates the composition and provides easy access to some otherwise not so apparent functionality.
+Microsoft.Composition helper utility which encapsulates the composition and provides easy access to some functionality which your MEF1 unit test code may be relying extensively on. This helper is intended to make it easier to transition your existing unit tests using MEF1 exports to use MEF2 exports instead while having to do as few code changes as possible.
 
 The main purpose of this utility is to allow MEF2 composition to be used in Unit Tests in conjunction with a mock/stub framework. With the default MEF2 composition, it is not really possible (to my knowledge) to override a type which is already included in the composition. A very concrete example of this is in the scenario where you have 2 types located in a library (DLL) which both are decorated with Export attributes, and you want to test one of the types and use a stub of the second type to do that. With MEF1 (i.e. System.ComponentModel.Composition) this was easily achieveable by simply adding the library and using /ComposeExport(myStub)/ to override the original with a stub.
 
